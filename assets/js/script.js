@@ -1,9 +1,32 @@
   const menuBtn = document.getElementById("menuBtn");
   const mobileMenu = document.getElementById("mobileMenu");
+  const closeMenuBtn = document.getElementById("closeMenuBtn");
 
   // Toggle mobile menu
-  menuBtn.addEventListener("click", () => {
+  function toggleMobileMenu() {
     mobileMenu.classList.toggle("hidden");
+    menuBtn.classList.toggle("active");
+    // Prevent body scroll when menu is open
+    if (!mobileMenu.classList.contains("hidden")) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }
+
+  menuBtn.addEventListener("click", toggleMobileMenu);
+  
+  if (closeMenuBtn) {
+    closeMenuBtn.addEventListener("click", toggleMobileMenu);
+  }
+
+  // Close menu when clicking on a mobile link
+  document.querySelectorAll(".mobile-link").forEach(link => {
+    link.addEventListener("click", () => {
+      if (!mobileMenu.classList.contains("hidden")) {
+        toggleMobileMenu();
+      }
+    });
   });
 
   // Smooth scroll function
@@ -21,8 +44,10 @@
   });
 
   // Close mobile menu if open
-  if (!mobileMenu.classList.contains("hidden")) {
+  if (mobileMenu && !mobileMenu.classList.contains("hidden")) {
     mobileMenu.classList.add("hidden");
+    if (menuBtn) menuBtn.classList.remove("active");
+    document.body.style.overflow = "";
   }
 }
 
@@ -76,14 +101,32 @@ document.querySelectorAll(".scroll-link").forEach(link => {
 
 
 
-var swiper = new Swiper(".heroSwiper", {
-    loop: true,
-    autoplay: {
-      delay: 3500,
-      disableOnInteraction: false,
-    },
-    effect: "fade",
-    fadeEffect: {
-      crossFade: true
-    },
-  });
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const swiperEl = document.querySelector(".heroSwiper");
+  const nextBtn = document.querySelector(".hero-nav-next");
+  const prevBtn = document.querySelector(".hero-nav-prev");
+  
+  if (swiperEl && nextBtn && prevBtn) {
+    var swiper = new Swiper(".heroSwiper", {
+      loop: true,
+      speed: 900,
+      effect: "fade",
+      fadeEffect: { crossFade: true },
+      navigation: {
+        nextEl: nextBtn,
+        prevEl: prevBtn,
+      },
+      autoplay: false, // Manual sliding only
+    });
+    
+    // Verify navigation is working
+    console.log("Swiper initialized with navigation buttons");
+  } else {
+    console.error("Swiper elements not found", { swiperEl, nextBtn, prevBtn });
+  }
+});
+
+
